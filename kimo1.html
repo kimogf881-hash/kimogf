@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حجوزاتي</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<style>
+:root{
+  --primary:#2563eb;
+  --card:#ffffff;
+  --text:#1e293b;
+  --sub:#64748b;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI',sans-serif;
+}
+
+body{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: radial-gradient(circle at top,#e0e7ff,#f5f7fb);
+}
+
+/* app */
+.app{
+  width:360px;
+  background:var(--card);
+  border-radius:24px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.08);
+  padding:20px;
+}
+
+/* top */
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:800;
+  color:var(--text);
+}
+
+/* tabs */
+.tabs{
+  display:flex;
+  background:#eef2ff;
+  border-radius:14px;
+  padding:4px;
+  margin:15px 0;
+}
+
+.tabs div{
+  flex:1;
+  text-align:center;
+  padding:10px;
+  cursor:pointer;
+  color:var(--sub);
+  transition:0.3s;
+}
+
+.tabs .active{
+  background:white;
+  color:var(--primary);
+  border-radius:10px;
+}
+
+/* forms */
+.form{display:none;}
+.form.active{
+  display:block;
+  animation:pop 0.4s ease;
+}
+
+@keyframes pop{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.input input{
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:12px;
+  border:1px solid #e2e8f0;
+}
+
+.btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:var(--primary);
+  color:white;
+  cursor:pointer;
+}
+
+/* 🔥 Google Button */
+.google-btn{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:14px;
+  background:white;
+  border:1px solid #ddd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  cursor:pointer;
+  transition:0.3s;
+  font-weight:500;
+}
+
+.google-btn:hover{
+  transform:scale(1.03);
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.google-btn img{
+  width:18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- top -->
+  <div class="top">
+    <div class="logo">حجوزاتي</div>
+  </div>
+
+  <!-- tabs -->
+  <div class="tabs">
+    <div id="loginTab" class="active" onclick="showLogin()">دخول</div>
+    <div id="signupTab" onclick="showSignup()">إنشاء حساب</div>
+  </div>
+
+  <!-- login -->
+  <div id="loginForm" class="form active">
+
+    <div class="input"><input placeholder="الإيميل"></div>
+    <div class="input"><input type="password" placeholder="كلمة المرور"></div>
+
+    <button class="btn">دخول</button>
+
+    <button class="google-btn" onclick="googleLogin()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+      تسجيل الدخول باستخدام Google
+    </button>
+
+  </div>
+
+  <!-- signup -->
+  <div id="signupForm" class="form">
+
+    <div class="input"><input placeholder="الاسم"></div>
+    <div class="input"><input placeholder="الإيميل"></div>
+    <div class="input"><input type="password" placeholder="كلمة المرور"></div>
+
+    <button class="btn">إنشاء حساب</button>
+
+    <button class="google-btn" onclick="googleLogin()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+      التسجيل باستخدام Google
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
+/* Firebase Config */
+const firebaseConfig = {
+  apiKey: "AIzaSyAv6mskNbOqDqOFDyX3GFRr6JtC2_mBU14",
+  authDomain: "my-reservatinos.firebaseapp.com",
+  projectId: "my-reservatinos",
+  storageBucket: "my-reservatinos.firebasestorage.app",
+  messagingSenderId: "20072193337",
+  appId: "1:20072193337:web:57a427559ff7b6dea05ce8",
+  measurementId: "G-X1STN96H38"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+/* ================= GOOGLE LOGIN ================= */
+function googleLogin(){
+
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  firebase.auth()
+  .signInWithPopup(provider)
+  .then((result)=>{
+
+    if(result.additionalUserInfo.isNewUser){
+      alert("تم إنشاء حساب جديد ✔");
+    } else {
+      alert("لديك حساب بالفعل ✔");
+    }
+
+    window.location.href = "kimo2.html";
+
+  })
+  .catch((error)=>{
+    alert(error.message);
+  });
+
+}
+
+/* tabs */
+function showLogin(){
+  loginForm.classList.add("active");
+  signupForm.classList.remove("active");
+  loginTab.classList.add("active");
+  signupTab.classList.remove("active");
+}
+
+function showSignup(){
+  signupForm.classList.add("active");
+  loginForm.classList.remove("active");
+  signupTab.classList.add("active");
+  loginTab.classList.remove("active");
+}
+
+</script>
+
+</body>
+</html>
