@@ -16,41 +16,15 @@ body{
   transition:0.3s;
 }
 
+/* ANDROID SIZE */
+.container{
+  padding:12px;
+  max-width:420px;
+  margin:auto;
+  padding-bottom:80px;
+}
+
 .dark{background:#121212;color:#fff;}
-
-.container{padding:15px;max-width:600px;margin:auto;}
-
-/* TOP MENU */
-.top-menu{
-  display:flex;
-  gap:8px;
-}
-
-.menu-item{
-  flex:1;
-  background:#fff;
-  padding:10px;
-  border-radius:12px;
-  text-align:center;
-  cursor:pointer;
-  transition:0.25s;
-}
-
-.menu-item i{
-  display:block;
-  margin-bottom:5px;
-  font-size:18px;
-  color:#2196f3;
-}
-
-.menu-item:hover{
-  transform:translateY(-3px);
-}
-
-.dark .menu-item{
-  background:#1e1e1e;
-  color:#fff;
-}
 
 /* CARD */
 .card{
@@ -73,55 +47,24 @@ body{
 .dark .profile{background:#1e1e1e}
 
 .cover{
-  height:170px;
+  height:160px;
   background:linear-gradient(45deg,#2196f3,#21cbf3);
 }
 
 .avatar-box{
   text-align:center;
-  margin-top:-60px;
-  position:relative;
+  margin-top:-55px;
 }
 
 .avatar{
-  width:110px;
-  height:110px;
+  width:100px;
+  height:100px;
   border-radius:50%;
   border:4px solid #fff;
   background:#ccc;
   background-size:cover;
   background-position:center;
   margin:auto;
-}
-
-.camera{
-  position:absolute;
-  bottom:10px;
-  right:40%;
-  background:#2196f3;
-  width:30px;
-  height:30px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  cursor:pointer;
-}
-
-/* INPUTS */
-input,select,button{
-  width:100%;
-  padding:10px;
-  margin-top:8px;
-  border-radius:10px;
-  border:none;
-}
-
-button{
-  background:#2196f3;
-  color:#fff;
-  cursor:pointer;
 }
 
 /* SETTINGS */
@@ -135,6 +78,26 @@ button{
 }
 
 .dark .setting{background:#1e1e1e}
+
+/* SERVICES */
+.services{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:10px;
+}
+
+.service{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.service:hover{transform:scale(1.05);}
+.dark .service{background:#1e1e1e}
 
 /* SUPPORT */
 .support-box{
@@ -150,8 +113,8 @@ button{
   text-align:center;
   text-decoration:none;
   color:#333;
-  transition:0.25s;
   box-shadow:0 6px 15px rgba(0,0,0,0.08);
+  transition:0.25s;
 }
 
 .support-item i{
@@ -170,35 +133,69 @@ button{
   color:#fff;
 }
 
-/* SERVICES */
-.services{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  margin-top:10px;
-}
-
-.service{
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
   background:#fff;
-  padding:15px;
-  border-radius:12px;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  box-shadow:0 -5px 15px rgba(0,0,0,0.1);
+}
+
+.dark .bottom-nav{background:#1e1e1e}
+
+.nav-item{
   text-align:center;
-  transition:0.2s;
+  font-size:12px;
   cursor:pointer;
+  color:#666;
 }
 
-.service:hover{
-  transform:scale(1.05);
-}
-
-.dark .service{
-  background:#1e1e1e;
-}
+.nav-item i{display:block;font-size:18px;}
 
 /* ANIMATION */
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(10px);}
   to{opacity:1;transform:translateY(0);}
+}
+
+/* 🔥 TOGGLE SWITCH */
+.theme-btn{
+  width:60px;
+  height:30px;
+  border-radius:20px;
+  background:#fff;
+  border:2px solid #2196f3;
+  position:relative;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.theme-btn::after{
+  content:'';
+  position:absolute;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:#2196f3;
+  top:50%;
+  transform:translateY(-50%);
+  left:3px;
+  transition:0.3s;
+}
+
+.theme-btn.active{
+  background:#4caf50;
+  border-color:#4caf50;
+}
+
+.theme-btn.active::after{
+  left:32px;
+  background:#fff;
 }
 
 </style>
@@ -210,171 +207,97 @@ button{
 
 <h2 id="title"></h2>
 
-<div class="top-menu">
+<div id="content"></div>
 
-<div class="menu-item" onclick="openProfile()">
-<i class="fas fa-user"></i><span id="p"></span>
 </div>
 
-<div class="menu-item" onclick="openSettings()">
-<i class="fas fa-cog"></i><span id="s"></span>
-</div>
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
 
-<div class="menu-item" onclick="openBookings()">
-<i class="fas fa-calendar"></i><span id="b"></span>
-</div>
-
-<div class="menu-item" onclick="openSupport()">
-<i class="fas fa-headset"></i><span id="su"></span>
-</div>
-
-<div class="menu-item" onclick="openServices()">
+<div class="nav-item" onclick="setPage('services')">
 <i class="fas fa-grid-2"></i><span id="sv"></span>
 </div>
 
+<div class="nav-item" onclick="setPage('bookings')">
+<i class="fas fa-calendar"></i><span id="b"></span>
 </div>
 
-<div id="content"></div>
+<div class="nav-item" onclick="setPage('support')">
+<i class="fas fa-headset"></i><span id="su"></span>
+</div>
+
+<div class="nav-item" onclick="setPage('profile')">
+<i class="fas fa-user"></i><span id="p"></span>
+</div>
 
 </div>
 
 <script>
 
-/* LANG */
+/* ===== LANG DATA ===== */
 const T={
 ar:{
 title:"حجوزاتي",
 profile:"الملف",
-settings:"الإعدادات",
 bookings:"الحجوزات",
 support:"الدعم",
 services:"الخدمات",
-dark:"الوضع الليلي",
-lang:"اللغة",
-on:"مفعل",
-off:"غير مفعل"
+dark:"الوضع الليلي"
 },
 en:{
 title:"Bookings",
 profile:"Profile",
-settings:"Settings",
 bookings:"Bookings",
 support:"Support",
 services:"Services",
-dark:"Dark Mode",
-lang:"Language",
-on:"ON",
-off:"OFF"
+dark:"Dark Mode"
 }
 };
 
-let lang=localStorage.getItem("lang")||"ar";
+let lang = localStorage.getItem("lang") || "ar";
+let currentPage = "services";
 
-let profile=JSON.parse(localStorage.getItem("profile"))||{
+/* PROFILE DATA */
+let profile = JSON.parse(localStorage.getItem("profile")) || {
 name:"اسم المستخدم",
-bio:"نبذة",
-img:""
+bio:"نبذة"
 };
 
-/* APPLY */
+/* ===== APPLY LANGUAGE (FIXED 100%) ===== */
 function applyLang(){
 
-let t=T[lang];
+let t = T[lang];
 
-title.innerText=t.title;
-p.innerText=t.profile;
-s.innerText=t.settings;
-b.innerText=t.bookings;
-su.innerText=t.support;
-sv.innerText=t.services;
+title.innerText = t.title;
+p.innerText = t.profile;
+b.innerText = t.bookings;
+su.innerText = t.support;
+sv.innerText = t.services;
 
-document.documentElement.dir=(lang==="ar")?"rtl":"ltr";
+document.documentElement.dir = (lang==="ar") ? "rtl" : "ltr";
+
+localStorage.setItem("lang", lang);
+
 }
 
-/* PROFILE */
-function openProfile(){
-
-content.innerHTML=`
-<div class="profile">
-
-<div class="cover"></div>
-
-<div class="avatar-box">
-
-<div class="avatar" style="background-image:url('${profile.img}')"></div>
-
-<div class="camera" onclick="file.click()">📷</div>
-<input type="file" id="file" hidden onchange="uploadImg(event)">
-
-</div>
-
-<div style="text-align:center;padding:10px">
-
-<h3>${profile.name}</h3>
-<p>${profile.bio}</p>
-
-</div>
-
-<div style="padding:15px">
-
-<input id="name" value="${profile.name}">
-<input id="bio" value="${profile.bio}">
-
-<button onclick="saveProfile()">حفظ</button>
-
-</div>
-
-</div>`;
+/* ===== NAV ===== */
+function setPage(page){
+currentPage = page;
+refreshPage();
 }
 
-/* SAVE */
-function saveProfile(){
+/* ===== REFRESH PAGE ===== */
+function refreshPage(){
 
-profile.name=document.getElementById("name").value;
-profile.bio=document.getElementById("bio").value;
+if(currentPage==="services") openServices();
+if(currentPage==="bookings") openBookings();
+if(currentPage==="support") openSupport();
+if(currentPage==="profile") openProfile();
 
-localStorage.setItem("profile",JSON.stringify(profile));
-
-openProfile();
 }
 
-/* IMAGE */
-function uploadImg(e){
-let r=new FileReader();
-r.onload=function(){
-profile.img=r.result;
-localStorage.setItem("profile",JSON.stringify(profile));
-openProfile();
-}
-r.readAsDataURL(e.target.files[0]);
-}
-
-/* SETTINGS */
-function openSettings(){
-
-content.innerHTML=`
-<div class="card">
-
-<h3>${T[lang].settings}</h3>
-
-<div class="setting">
-<span>${T[lang].dark}</span>
-<button onclick="toggleDark();openSettings()">
-${document.body.classList.contains("dark")?T[lang].on:T[lang].off}
-</button>
-</div>
-
-<select onchange="changeLang(this.value)">
-<option value="ar" ${lang==="ar"?"selected":""}>العربية</option>
-<option value="en" ${lang==="en"?"selected":""}>English</option>
-</select>
-
-</div>`;
-}
-
-/* SERVICES */
+/* ===== SERVICES ===== */
 function openServices(){
-
 content.innerHTML=`
 <div class="services">
 
@@ -387,52 +310,99 @@ content.innerHTML=`
 </div>`;
 }
 
-/* BOOKINGS */
+/* ===== BOOKINGS ===== */
 function openBookings(){
 content.innerHTML="<div class='card'>📅 "+T[lang].bookings+"</div>";
 }
 
-/* SUPPORT */
+/* ===== SUPPORT ===== */
 function openSupport(){
-
 content.innerHTML=`
 <div class="card">
 
 <div class="support-box">
 
-<a class="support-item" href="https://wa.me/249994501781">
-<i class="fab fa-whatsapp"></i>WhatsApp
-</a>
-
-<a class="support-item" href="tel:0964500007">
-<i class="fas fa-phone"></i>Call
-</a>
-
-<a class="support-item" href="mailto:maoiaydgf@gmail.com">
-<i class="fas fa-envelope"></i>Email
-</a>
+<a class="support-item"><i class="fab fa-whatsapp"></i>WhatsApp</a>
+<a class="support-item"><i class="fas fa-phone"></i>Call</a>
+<a class="support-item"><i class="fas fa-envelope"></i>Email</a>
 
 </div>
 
 </div>`;
 }
 
-/* DARK */
-function toggleDark(){
+/* ===== PROFILE + SETTINGS ===== */
+function openProfile(){
+
+content.innerHTML=`
+<div class="profile">
+
+<div class="cover"></div>
+
+<div class="avatar-box">
+<div class="avatar"></div>
+</div>
+
+<div style="text-align:center;padding:10px">
+<h3>${profile.name}</h3>
+<p>${profile.bio}</p>
+</div>
+
+<div style="padding:15px">
+
+<h3>${T[lang].dark}</h3>
+
+<div class="setting">
+<span>${T[lang].dark}</span>
+<div class="theme-btn" id="themeBtn" onclick="toggleDark(this)"></div>
+</div>
+
+<select onchange="changeLang(this.value)">
+<option value="ar" ${lang==="ar"?"selected":""}>العربية</option>
+<option value="en" ${lang==="en"?"selected":""}>English</option>
+</select>
+
+</div>
+
+</div>`;
+}
+
+/* ===== DARK MODE ===== */
+function toggleDark(btn){
+
 document.body.classList.toggle("dark");
-localStorage.setItem("dark",document.body.classList.contains("dark"));
+
+let isDark = document.body.classList.contains("dark");
+
+localStorage.setItem("dark", isDark);
+
+btn.classList.toggle("active", isDark);
+
 }
 
-/* LANG */
+/* ===== LANGUAGE FIX ===== */
 function changeLang(l){
-lang=l;
-localStorage.setItem("lang",l);
+
+lang = l;
+localStorage.setItem("lang", lang);
+
+/* 🔥 مهم جداً */
 applyLang();
-openSettings();
+refreshPage();
+
 }
 
-/* INIT */
-window.onload=applyLang;
+/* ===== LOAD ===== */
+window.onload=function(){
+
+if(localStorage.getItem("dark")==="true"){
+document.body.classList.add("dark");
+}
+
+applyLang();
+refreshPage();
+
+}
 
 </script>
 
