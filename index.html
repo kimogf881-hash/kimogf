@@ -123,17 +123,37 @@ body{
   font-weight:500;
 }
 
-.google-btn:hover{
-  transform:scale(1.03);
-  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+/* ===== LOADER OVERLAY ===== */
+#loadingOverlay{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.35);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  z-index:9999;
 }
 
-/* ===== LOADER ===== */
-.loader{
+.spinner{
+  width:60px;
+  height:60px;
+  border:6px solid #ddd;
+  border-top:6px solid #2563eb;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+.check{
+  font-size:60px;
+  color:#22c55e;
   display:none;
-  text-align:center;
-  margin-top:10px;
-  color:var(--primary);
+}
+
+@keyframes spin{
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
 }
 
 /* ===== TOAST ===== */
@@ -149,60 +169,16 @@ body{
   font-size:14px;
   display:none;
   z-index:999;
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
-}
-
-/* ===== SHAKE ===== */
-.shake{
-  animation:shake 0.4s;
-}
-
-@keyframes shake{
-  0%{transform:translateX(0)}
-  25%{transform:translateX(-5px)}
-  50%{transform:translateX(5px)}
-  75%{transform:translateX(-5px)}
-  100%{transform:translateX(0)}
-}
-
-/* ===== SPINNER ===== */
-@keyframes spin{
-  0%{transform:rotate(0deg);}
-  100%{transform:rotate(360deg);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOADING OVERLAY -->
-<div id="loadingOverlay" style="
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.35);
-display:none;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-z-index:9999;
-">
-
-  <div id="spinner" style="
-  width:60px;
-  height:60px;
-  border:6px solid #ddd;
-  border-top:6px solid #2563eb;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  "></div>
-
-  <div id="check" style="
-  display:none;
-  font-size:60px;
-  color:#22c55e;
-  ">✔</div>
-
+<!-- LOADING -->
+<div id="loadingOverlay">
+  <div class="spinner" id="spinner"></div>
+  <div class="check" id="check">✔</div>
 </div>
 
 <div class="app" id="app">
@@ -222,7 +198,7 @@ z-index:9999;
 <div id="loginForm" class="form active">
 
   <div class="input">
-    <input id="loginEmail" placeholder="الإيميل أو رقم الهاتف">
+    <input id="loginEmail" placeholder="الإيميل">
   </div>
 
   <div class="input">
@@ -231,10 +207,7 @@ z-index:9999;
 
   <button class="btn" onclick="login()">دخول</button>
 
-  <button class="google-btn" onclick="googleLogin()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-    تسجيل الدخول باستخدام Google
-  </button>
+  <button class="google-btn" onclick="googleLogin()">Google</button>
 
 </div>
 
@@ -247,12 +220,7 @@ z-index:9999;
 
   <button class="btn" onclick="signup()">إنشاء حساب</button>
 
-  <div class="loader" id="loader">⏳ جاري إنشاء الحساب...</div>
-
-  <button class="google-btn" onclick="googleLogin()">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-    التسجيل باستخدام Google
-  </button>
+  <button class="google-btn" onclick="googleLogin()">Google</button>
 
 </div>
 
@@ -274,12 +242,12 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 /* ===== LOADING ===== */
-const loadingOverlay = document.getElementById("loadingOverlay");
+const overlay = document.getElementById("loadingOverlay");
 const spinner = document.getElementById("spinner");
 const check = document.getElementById("check");
 
 function showLoading(){
-  loadingOverlay.style.display="flex";
+  overlay.style.display="flex";
   spinner.style.display="block";
   check.style.display="none";
 }
@@ -287,17 +255,14 @@ function showLoading(){
 function successLoading(){
   spinner.style.display="none";
   check.style.display="block";
-
-  setTimeout(()=>{
-    loadingOverlay.style.display="none";
-  },1000);
+  setTimeout(()=>overlay.style.display="none",1000);
 }
 
 function hideLoading(){
-  loadingOverlay.style.display="none";
+  overlay.style.display="none";
 }
 
-/* ===== SIGNUP (FIXED AS REQUESTED) ===== */
+/* ===== SIGNUP (FIXED) ===== */
 function signup(){
 
   let name = signupName.value;
@@ -310,14 +275,14 @@ function signup(){
 
   showLoading();
 
-  // ⬅️ التحميل هنا مستقل 4 ثواني بدون علاقة بالنتيجة
+  // ⏳ التحميل ثابت 4 ثواني + ✔
   setTimeout(()=>{
     successLoading();
     showToast("تم إنشاء الحساب بنجاح");
     showLogin();
   },4000);
 
-  // Firebase شغال في الخلفية
+  // 🔥 Firebase الحقيقي
   auth.createUserWithEmailAndPassword(email,password)
   .then(async (userCredential)=>{
     let user = userCredential.user;
@@ -342,7 +307,6 @@ function login(){
   .catch(()=>{
     hideLoading();
   });
-
 }
 
 /* ===== GOOGLE ===== */
@@ -360,7 +324,6 @@ function googleLogin(){
   .catch(()=>{
     hideLoading();
   });
-
 }
 
 /* ===== TOAST ===== */
