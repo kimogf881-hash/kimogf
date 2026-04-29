@@ -16,7 +16,6 @@ body{
   transition:0.3s;
 }
 
-/* ANDROID SIZE */
 .container{
   padding:12px;
   max-width:420px;
@@ -26,7 +25,6 @@ body{
 
 .dark{background:#121212;color:#fff;}
 
-/* HEADER */
 .header{
   background:linear-gradient(45deg,#2196f3,#21cbf3);
   color:#fff;
@@ -38,7 +36,6 @@ body{
   margin-bottom:10px;
 }
 
-/* CARD */
 .card{
   background:linear-gradient(45deg,#2196f3,#21cbf3);
   color:#fff;
@@ -47,7 +44,7 @@ body{
   margin-top:10px;
 }
 
-/* PROFILE 🔥 (تطوير فقط هنا) */
+/* PROFILE */
 .profile{
   background:#fff;
   border-radius:20px;
@@ -61,14 +58,11 @@ body{
 .cover{
   height:170px;
   background:linear-gradient(45deg,#2196f3,#21cbf3);
-  position:relative;
 }
 
-/* avatar احترافي */
 .avatar-box{
   text-align:center;
   margin-top:-60px;
-  position:relative;
 }
 
 .avatar{
@@ -82,22 +76,14 @@ body{
   animation:pop 0.4s ease;
 }
 
-/* اسم + ايميل */
 .user-info{
   text-align:center;
   padding:10px;
 }
 
-.user-info h3{
-  margin:5px 0;
-}
+.user-info h3{margin:5px 0;}
+.user-info p{font-size:13px;color:#777;}
 
-.user-info p{
-  font-size:13px;
-  color:#777;
-}
-
-/* SETTINGS */
 .setting{
   background:#fff;
   padding:12px;
@@ -130,7 +116,6 @@ body{
   transform:translateY(-8px) scale(1.05);
   box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
-
 .dark .service{background:#1e1e1e}
 
 /* SUPPORT */
@@ -152,7 +137,6 @@ body{
 
 .support-item:hover{
   transform:translateY(-8px) scale(1.05);
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
 .support-item i{
@@ -240,6 +224,51 @@ body{
   background:#fff;
 }
 
+/* 🌐 اللغة */
+.lang-box{
+  position:relative;
+}
+
+.lang-icon{
+  font-size:22px;
+  cursor:pointer;
+  color:#2196f3;
+  transition:0.3s;
+}
+
+.lang-icon:hover{
+  transform:scale(1.2);
+}
+
+.lang-menu{
+  position:absolute;
+  top:35px;
+  right:0;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+  overflow:hidden;
+  display:none;
+  z-index:10;
+}
+
+.lang-menu div{
+  padding:10px 15px;
+  cursor:pointer;
+  transition:0.2s;
+  font-size:14px;
+}
+
+.lang-menu div:hover{
+  background:#2196f3;
+  color:#fff;
+}
+
+.dark .lang-menu{
+  background:#1e1e1e;
+  color:#fff;
+}
+
 /* animations */
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(10px);}
@@ -268,7 +297,7 @@ body{
 <div class="bottom-nav">
 
 <div class="nav-item" onclick="setPage('services')">
-<i class="fas fa-globe"></i><span id="sv"></span>
+<i class="fas fa-house"></i><span id="sv"></span>
 </div>
 
 <div class="nav-item" onclick="setPage('bookings')">
@@ -331,6 +360,7 @@ if(currentPage==="support") openSupport();
 if(currentPage==="profile") openProfile();
 }
 
+/* PROFILE */
 function openProfile(){
 content.innerHTML=`
 <div class="profile">
@@ -342,8 +372,8 @@ content.innerHTML=`
 </div>
 
 <div class="user-info">
-<h3 id="username">اسم المستخدم</h3>
-<p id="email">user@email.com</p>
+<h3>اسم المستخدم</h3>
+<p>user@email.com</p>
 </div>
 
 <div style="padding:15px">
@@ -353,17 +383,22 @@ content.innerHTML=`
 <div class="theme-btn" onclick="toggleDark(this)"></div>
 </div>
 
-<select onchange="changeLang(this.value)">
-<option value="ar" ${lang==="ar"?"selected":""}>العربية</option>
-<option value="en" ${lang==="en"?"selected":""}>English</option>
-</select>
+<!-- 🌐 اللغة -->
+<div class="lang-box">
+<i class="fas fa-globe lang-icon" onclick="toggleLangMenu()"></i>
+
+<div id="langMenu" class="lang-menu">
+<div onclick="setLang('ar')">🇸🇩 العربية</div>
+<div onclick="setLang('en')">🇺🇸 English</div>
+</div>
+</div>
 
 </div>
 
 </div>`;
 }
 
-/* باقي الصفحات بدون تغيير */
+/* SERVICES */
 function openServices(){
 content.innerHTML=`<div class="services">
 <div class="service">✈️ ${lang==="ar"?"سفر":"Travel"}</div>
@@ -374,29 +409,60 @@ content.innerHTML=`<div class="services">
 </div>`;
 }
 
+/* BOOKINGS */
 function openBookings(){
 content.innerHTML="<div class='card'>📅 "+T[lang].bookings+"</div>";
 }
 
+/* SUPPORT */
 function openSupport(){
-content.innerHTML=`<div class="card"><div class="support-box">
-<div class="support-item"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></div>
-<div class="support-item"><i class="fas fa-phone"></i><span>Call</span></div>
-<div class="support-item"><i class="fas fa-envelope"></i><span>Email</span></div>
-</div></div>`;
+content.innerHTML=`<div class="card">
+<div class="support-box">
+
+<div class="support-item">
+<i class="fab fa-whatsapp"></i><span>WhatsApp</span>
+</div>
+
+<div class="support-item">
+<i class="fas fa-phone"></i><span>Call</span>
+</div>
+
+<div class="support-item">
+<i class="fas fa-envelope"></i><span>Email</span>
+</div>
+
+</div>
+</div>`;
 }
 
+/* DARK */
 function toggleDark(btn){
 document.body.classList.toggle("dark");
 btn.classList.toggle("active");
 }
 
-function changeLang(l){
-lang=l;
+/* LANGUAGE MENU */
+function toggleLangMenu(){
+let m = document.getElementById("langMenu");
+m.style.display = (m.style.display==="block") ? "none" : "block";
+}
+
+function setLang(l){
+lang = l;
 localStorage.setItem("lang",l);
 applyLang();
 refreshPage();
+document.getElementById("langMenu").style.display="none";
 }
+
+document.addEventListener("click", function(e){
+let menu = document.getElementById("langMenu");
+let icon = document.querySelector(".lang-icon");
+
+if(menu && icon && !menu.contains(e.target) && !icon.contains(e.target)){
+menu.style.display="none";
+}
+});
 
 window.onload=function(){
 applyLang();
