@@ -11,9 +11,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <style>
-  @keyframes spin{
-  to{transform:rotate(360deg);}
-}
+@keyframes spin{to{transform:rotate(360deg);}}
+
 :root{
   --primary:#2563eb;
   --card:#ffffff;
@@ -21,12 +20,7 @@
   --sub:#64748b;
 }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Segoe UI',sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
 
 body{
   height:100vh;
@@ -44,18 +38,9 @@ body{
   padding:20px;
 }
 
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 
-.logo{
-  font-size:24px;
-  font-weight:800;
-  color:var(--text);
-}
+.logo{font-size:24px;font-weight:800;color:var(--text);}
 
 .tabs{
   display:flex;
@@ -81,10 +66,7 @@ body{
 }
 
 .form{display:none;}
-.form.active{
-  display:block;
-  animation:pop 0.4s ease;
-}
+.form.active{display:block;animation:pop 0.4s ease;}
 
 @keyframes pop{
   from{opacity:0; transform:translateY(10px);}
@@ -130,9 +112,7 @@ body{
   box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
-.google-btn img{
-  width:18px;
-}
+.google-btn img{width:18px;}
 </style>
 </head>
 
@@ -162,7 +142,6 @@ body{
 
     <button class="btn" onclick="login()">دخول</button>
 
-    <!-- نسيت كلمة السر -->
     <p style="text-align:center; margin-top:10px; cursor:pointer; color:#2563eb;" onclick="forgotPassword()">
       نسيت كلمة السر؟
     </p>
@@ -193,27 +172,6 @@ body{
 </div>
 
 <script>
-  function showLoading(callback){
-  const overlay = document.getElementById("loadingOverlay");
-  const spinner = document.getElementById("spinner");
-  const check = document.getElementById("check");
-
-  overlay.style.display="flex";
-  spinner.style.display="block";
-  check.style.display="none";
-
-  setTimeout(()=>{
-
-    spinner.style.display="none";
-    check.style.display="block";
-
-    setTimeout(()=>{
-      overlay.style.display="none";
-      if(callback) callback();
-    },800);
-
-  },4000);
-}
 
 /* Firebase */
 const firebaseConfig = {
@@ -229,108 +187,80 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* 🔥 SIGNUP */
+/* SIGNUP */
 function signup(){
-
-  let name = document.getElementById("signupName").value;
-  let email = document.getElementById("signupEmail").value;
-  let password = document.getElementById("signupPassword").value;
+  let name = signupName.value;
+  let email = signupEmail.value;
+  let password = signupPassword.value;
   let phone = prompt("ادخل رقم الهاتف");
 
   auth.createUserWithEmailAndPassword(email, password)
   .then(async (userCredential)=>{
-
     let user = userCredential.user;
 
     await db.collection("users").doc(user.uid).set({
-      name: name,
-      email: email,
-      phone: phone
+      name,email,phone
     });
 
     alert("تم إنشاء الحساب");
+
+    // ✅ مسح الحقول
+    signupName.value="";
+    signupEmail.value="";
+    signupPassword.value="";
+
     showLogin();
-
   })
-  .catch(err=>{
-    alert(err.message);
-  });
-
+  .catch(err=>alert(err.message));
 }
 
-/* 🔥 LOGIN */
+/* LOGIN */
 async function login(){
-
-  let input = document.getElementById("loginEmail").value;
-  let password = document.getElementById("loginPassword").value;
-
+  let input = loginEmail.value;
+  let password = loginPassword.value;
   let email = input;
 
   if(!input.includes("@")){
-    let snapshot = await db.collection("users")
-      .where("phone", "==", input)
-      .get();
-
-    if(snapshot.empty){
-      alert("رقم الهاتف غير مسجل");
-      return;
-    }
-
-    snapshot.forEach(doc=>{
-      email = doc.data().email;
-    });
+    let snapshot = await db.collection("users").where("phone","==",input).get();
+    if(snapshot.empty){alert("رقم الهاتف غير مسجل");return;}
+    snapshot.forEach(doc=>email=doc.data().email);
   }
 
-  auth.signInWithEmailAndPassword(email, password)
-  .then(()=>{
-    window.location.href = "kimo2.html";
-  })
-  .catch(err=>{
-    alert(err.message);
-  });
-
+  auth.signInWithEmailAndPassword(email,password)
+  .then(()=>window.location.href="kimo2.html")
+  .catch(err=>alert(err.message));
 }
 
-/* 🔥 FORGOT PASSWORD */
+/* FORGOT PASSWORD */
 function forgotPassword(){
-
   let email = prompt("ادخل الإيميل");
-
   if(!email) return;
 
   auth.sendPasswordResetEmail(email)
-  .then(()=>{
-    alert("تم إرسال رابط إعادة تعيين كلمة المرور");
-  })
-  .catch(err=>{
-    alert(err.message);
-  });
-
+  .then(()=>alert("تم إرسال الرابط"))
+  .catch(err=>alert(err.message));
 }
 
-/* GOOGLE LOGIN */
+/* GOOGLE LOGIN (GitHub fix) */
 function googleLogin(){
-
   const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithRedirect(provider);
+}
 
-  auth.signInWithPopup(provider)
-  .then(async (result)=>{
-
+/* 🔥 بعد الرجوع من قوقل */
+auth.getRedirectResult().then(async(result)=>{
+  if(result.user){
     let user = result.user;
 
     await db.collection("users").doc(user.uid).set({
-      name: user.displayName,
-      email: user.email,
-      phone: ""
-    }, { merge:true });
+      name:user.displayName,
+      email:user.email,
+      phone:""
+    },{merge:true});
 
-    window.location.href = "kimo2.html";
-  })
-  .catch(err=>{
-    alert(err.message);
-  });
-
-}
+    window.location.href="kimo2.html";
+  }
+});
 
 /* tabs */
 function showLogin(){
