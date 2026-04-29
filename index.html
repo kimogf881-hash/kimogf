@@ -44,7 +44,7 @@ body{
 /* top */
 .top{
   display:flex;
-  justify-content:space-between;
+  justify-content:center;
   align-items:center;
   margin-bottom:10px;
 }
@@ -109,7 +109,7 @@ body{
   cursor:pointer;
 }
 
-/* 🔥 Google Button */
+/* Google Button */
 .google-btn{
   width:100%;
   padding:12px;
@@ -195,14 +195,12 @@ const firebaseConfig = {
   projectId: "my-reservatinos",
   storageBucket: "my-reservatinos.firebasestorage.app",
   messagingSenderId: "20072193337",
-  appId: "1:20072193337:web:57a427559ff7b6dea05ce8",
-  measurementId: "G-X1STN96H38"
+  appId: "1:20072193337:web:57a427559ff7b6dea05ce8"
 };
 
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 
-/* ================= GOOGLE LOGIN ================= */
+/* GOOGLE LOGIN */
 function googleLogin(){
 
   const provider = new firebase.auth.GoogleAuthProvider();
@@ -211,11 +209,18 @@ function googleLogin(){
   .signInWithPopup(provider)
   .then((result)=>{
 
-    if(result.additionalUserInfo.isNewUser){
-      alert("تم إنشاء حساب جديد ✔");
-    } else {
-      alert("لديك حساب بالفعل ✔");
-    }
+    let user = result.user;
+
+    // 🔥 نجيب الاسم أو الإيميل
+    let username = user.displayName || user.email;
+
+    // 🔥 نحفظو عشان الصفحة التانية
+    let profile = {
+      name: username,
+      bio: "مرحبا 👋"
+    };
+
+    localStorage.setItem("profile", JSON.stringify(profile));
 
     window.location.href = "kimo2.html";
 
