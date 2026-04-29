@@ -133,6 +133,8 @@ body{
   text-align:center;
   cursor:pointer;
   transition:0.3s;
+  text-decoration:none;
+  color:inherit;
 }
 
 .support-item:hover{
@@ -224,51 +226,6 @@ body{
   background:#fff;
 }
 
-/* 🌐 اللغة */
-.lang-box{
-  position:relative;
-}
-
-.lang-icon{
-  font-size:22px;
-  cursor:pointer;
-  color:#2196f3;
-  transition:0.3s;
-}
-
-.lang-icon:hover{
-  transform:scale(1.2);
-}
-
-.lang-menu{
-  position:absolute;
-  top:35px;
-  right:0;
-  background:#fff;
-  border-radius:12px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-  overflow:hidden;
-  display:none;
-  z-index:10;
-}
-
-.lang-menu div{
-  padding:10px 15px;
-  cursor:pointer;
-  transition:0.2s;
-  font-size:14px;
-}
-
-.lang-menu div:hover{
-  background:#2196f3;
-  color:#fff;
-}
-
-.dark .lang-menu{
-  background:#1e1e1e;
-  color:#fff;
-}
-
 /* animations */
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(10px);}
@@ -278,6 +235,13 @@ body{
 @keyframes pop{
   from{transform:scale(0.8);opacity:0;}
   to{transform:scale(1);opacity:1;}
+}
+
+/* 🌐 language icon */
+.lang-icon{
+  font-size:22px;
+  cursor:pointer;
+  color:#2196f3;
 }
 
 </style>
@@ -383,14 +347,9 @@ content.innerHTML=`
 <div class="theme-btn" onclick="toggleDark(this)"></div>
 </div>
 
-<!-- 🌐 اللغة -->
-<div class="lang-box">
-<i class="fas fa-globe lang-icon" onclick="toggleLangMenu()"></i>
-
-<div id="langMenu" class="lang-menu">
-<div onclick="setLang('ar')">🇸🇩 العربية</div>
-<div onclick="setLang('en')">🇺🇸 English</div>
-</div>
+<div class="setting">
+<span>اللغة</span>
+<i class="fas fa-globe lang-icon" onclick="toggleLang()"></i>
 </div>
 
 </div>
@@ -416,20 +375,21 @@ content.innerHTML="<div class='card'>📅 "+T[lang].bookings+"</div>";
 
 /* SUPPORT */
 function openSupport(){
-content.innerHTML=`<div class="card">
+content.innerHTML=`
+<div class="card">
 <div class="support-box">
 
-<div class="support-item">
+<a href="https://wa.me/249994501781" target="_blank" class="support-item">
 <i class="fab fa-whatsapp"></i><span>WhatsApp</span>
-</div>
+</a>
 
-<div class="support-item">
+<a href="tel:0964500007" class="support-item">
 <i class="fas fa-phone"></i><span>Call</span>
-</div>
+</a>
 
-<div class="support-item">
+<a href="mailto:maoiaydgf@gmail.com" class="support-item">
 <i class="fas fa-envelope"></i><span>Email</span>
-</div>
+</a>
 
 </div>
 </div>`;
@@ -441,28 +401,13 @@ document.body.classList.toggle("dark");
 btn.classList.toggle("active");
 }
 
-/* LANGUAGE MENU */
-function toggleLangMenu(){
-let m = document.getElementById("langMenu");
-m.style.display = (m.style.display==="block") ? "none" : "block";
-}
-
-function setLang(l){
-lang = l;
-localStorage.setItem("lang",l);
+/* 🔥 TOGGLE LANGUAGE */
+function toggleLang(){
+lang = (lang === "ar") ? "en" : "ar";
+localStorage.setItem("lang", lang);
 applyLang();
 refreshPage();
-document.getElementById("langMenu").style.display="none";
 }
-
-document.addEventListener("click", function(e){
-let menu = document.getElementById("langMenu");
-let icon = document.querySelector(".lang-icon");
-
-if(menu && icon && !menu.contains(e.target) && !icon.contains(e.target)){
-menu.style.display="none";
-}
-});
 
 window.onload=function(){
 applyLang();
