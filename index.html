@@ -11,6 +11,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <style>
+  @keyframes spin{
+  to{transform:rotate(360deg);}
+}
 :root{
   --primary:#2563eb;
   --card:#ffffff;
@@ -39,7 +42,6 @@ body{
   border-radius:24px;
   box-shadow:0 20px 40px rgba(0,0,0,0.08);
   padding:20px;
-  position:relative;
 }
 
 .top{
@@ -123,111 +125,97 @@ body{
   font-weight:500;
 }
 
-/* ===== LOADER OVERLAY ===== */
-#loadingOverlay{
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,0.35);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  z-index:9999;
+.google-btn:hover{
+  transform:scale(1.03);
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
-.spinner{
-  width:60px;
-  height:60px;
-  border:6px solid #ddd;
-  border-top:6px solid #2563eb;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-}
-
-.check{
-  font-size:60px;
-  color:#22c55e;
-  display:none;
-}
-
-@keyframes spin{
-  0%{transform:rotate(0deg);}
-  100%{transform:rotate(360deg);}
-}
-
-/* ===== TOAST ===== */
-.toast{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  background:#111827;
-  color:white;
-  padding:12px 20px;
-  border-radius:12px;
-  font-size:14px;
-  display:none;
-  z-index:999;
+.google-btn img{
+  width:18px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOADING -->
-<div id="loadingOverlay">
-  <div class="spinner" id="spinner"></div>
-  <div class="check" id="check">✔</div>
-</div>
+<div class="app">
 
-<div class="app" id="app">
-
-<div class="toast" id="toast"></div>
-
-<div class="top">
-  <div class="logo">حجوزاتي</div>
-</div>
-
-<div class="tabs">
-  <div id="loginTab" class="active" onclick="showLogin()">دخول</div>
-  <div id="signupTab" onclick="showSignup()">إنشاء حساب</div>
-</div>
-
-<!-- LOGIN -->
-<div id="loginForm" class="form active">
-
-  <div class="input">
-    <input id="loginEmail" placeholder="الإيميل">
+  <div class="top">
+    <div class="logo">حجوزاتي</div>
   </div>
 
-  <div class="input">
-    <input id="loginPassword" type="password" placeholder="كلمة المرور">
+  <div class="tabs">
+    <div id="loginTab" class="active" onclick="showLogin()">دخول</div>
+    <div id="signupTab" onclick="showSignup()">إنشاء حساب</div>
   </div>
 
-  <button class="btn" onclick="login()">دخول</button>
+  <!-- login -->
+  <div id="loginForm" class="form active">
 
-  <button class="google-btn" onclick="googleLogin()">Google</button>
+    <div class="input">
+      <input id="loginEmail" placeholder="الإيميل أو رقم الهاتف">
+    </div>
 
-</div>
+    <div class="input">
+      <input id="loginPassword" type="password" placeholder="كلمة المرور">
+    </div>
 
-<!-- SIGNUP -->
-<div id="signupForm" class="form">
+    <button class="btn" onclick="login()">دخول</button>
 
-  <div class="input"><input id="signupName" placeholder="الاسم"></div>
-  <div class="input"><input id="signupEmail" placeholder="الإيميل"></div>
-  <div class="input"><input id="signupPassword" type="password" placeholder="كلمة المرور"></div>
+    <!-- نسيت كلمة السر -->
+    <p style="text-align:center; margin-top:10px; cursor:pointer; color:#2563eb;" onclick="forgotPassword()">
+      نسيت كلمة السر؟
+    </p>
 
-  <button class="btn" onclick="signup()">إنشاء حساب</button>
+    <button class="google-btn" onclick="googleLogin()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+      تسجيل الدخول باستخدام Google
+    </button>
 
-  <button class="google-btn" onclick="googleLogin()">Google</button>
+  </div>
 
-</div>
+  <!-- signup -->
+  <div id="signupForm" class="form">
+
+    <div class="input"><input id="signupName" placeholder="الاسم"></div>
+    <div class="input"><input id="signupEmail" placeholder="الإيميل"></div>
+    <div class="input"><input id="signupPassword" type="password" placeholder="كلمة المرور"></div>
+
+    <button class="btn" onclick="signup()">إنشاء حساب</button>
+
+    <button class="google-btn" onclick="googleLogin()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+      التسجيل باستخدام Google
+    </button>
+
+  </div>
 
 </div>
 
 <script>
+  function showLoading(callback){
+  const overlay = document.getElementById("loadingOverlay");
+  const spinner = document.getElementById("spinner");
+  const check = document.getElementById("check");
 
+  overlay.style.display="flex";
+  spinner.style.display="block";
+  check.style.display="none";
+
+  setTimeout(()=>{
+
+    spinner.style.display="none";
+    check.style.display="block";
+
+    setTimeout(()=>{
+      overlay.style.display="none";
+      if(callback) callback();
+    },800);
+
+  },4000);
+}
+
+/* Firebase */
 const firebaseConfig = {
   apiKey: "AIzaSyAv6mskNbOqDqOFDyX3GFRr6JtC2_mBU14",
   authDomain: "my-reservatinos.firebaseapp.com",
@@ -241,100 +229,110 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* ===== LOADING ===== */
-const overlay = document.getElementById("loadingOverlay");
-const spinner = document.getElementById("spinner");
-const check = document.getElementById("check");
-
-function showLoading(){
-  overlay.style.display="flex";
-  spinner.style.display="block";
-  check.style.display="none";
-}
-
-function successLoading(){
-  spinner.style.display="none";
-  check.style.display="block";
-  setTimeout(()=>overlay.style.display="none",1000);
-}
-
-function hideLoading(){
-  overlay.style.display="none";
-}
-
-/* ===== SIGNUP (FIXED) ===== */
+/* 🔥 SIGNUP */
 function signup(){
 
-  let name = signupName.value;
-  let email = signupEmail.value;
-  let password = signupPassword.value;
+  let name = document.getElementById("signupName").value;
+  let email = document.getElementById("signupEmail").value;
+  let password = document.getElementById("signupPassword").value;
+  let phone = prompt("ادخل رقم الهاتف");
 
-  if(!name || !email || !password){
-    return;
+  auth.createUserWithEmailAndPassword(email, password)
+  .then(async (userCredential)=>{
+
+    let user = userCredential.user;
+
+    await db.collection("users").doc(user.uid).set({
+      name: name,
+      email: email,
+      phone: phone
+    });
+
+    alert("تم إنشاء الحساب");
+    showLogin();
+
+  })
+  .catch(err=>{
+    alert(err.message);
+  });
+
+}
+
+/* 🔥 LOGIN */
+async function login(){
+
+  let input = document.getElementById("loginEmail").value;
+  let password = document.getElementById("loginPassword").value;
+
+  let email = input;
+
+  if(!input.includes("@")){
+    let snapshot = await db.collection("users")
+      .where("phone", "==", input)
+      .get();
+
+    if(snapshot.empty){
+      alert("رقم الهاتف غير مسجل");
+      return;
+    }
+
+    snapshot.forEach(doc=>{
+      email = doc.data().email;
+    });
   }
 
-  showLoading();
-
-  // ⏳ التحميل ثابت 4 ثواني + ✔
-  setTimeout(()=>{
-    successLoading();
-    showToast("تم إنشاء الحساب بنجاح");
-    showLogin();
-  },4000);
-
-  // 🔥 Firebase الحقيقي
-  auth.createUserWithEmailAndPassword(email,password)
-  .then(async (userCredential)=>{
-    let user = userCredential.user;
-    await db.collection("users").doc(user.uid).set({name,email});
-  })
-  .catch(()=>{});
-}
-
-/* ===== LOGIN ===== */
-function login(){
-
-  let email = loginEmail.value;
-  let password = loginPassword.value;
-
-  showLoading();
-
-  auth.signInWithEmailAndPassword(email,password)
+  auth.signInWithEmailAndPassword(email, password)
   .then(()=>{
-    hideLoading();
-    window.location.href="kimo2.html";
+    window.location.href = "kimo2.html";
   })
-  .catch(()=>{
-    hideLoading();
+  .catch(err=>{
+    alert(err.message);
   });
+
 }
 
-/* ===== GOOGLE ===== */
+/* 🔥 FORGOT PASSWORD */
+function forgotPassword(){
+
+  let email = prompt("ادخل الإيميل");
+
+  if(!email) return;
+
+  auth.sendPasswordResetEmail(email)
+  .then(()=>{
+    alert("تم إرسال رابط إعادة تعيين كلمة المرور");
+  })
+  .catch(err=>{
+    alert(err.message);
+  });
+
+}
+
+/* GOOGLE LOGIN */
 function googleLogin(){
 
   const provider = new firebase.auth.GoogleAuthProvider();
 
-  showLoading();
-
   auth.signInWithPopup(provider)
-  .then(()=>{
-    hideLoading();
-    window.location.href="kimo2.html";
+  .then(async (result)=>{
+
+    let user = result.user;
+
+    await db.collection("users").doc(user.uid).set({
+      name: user.displayName,
+      email: user.email,
+      phone: ""
+    }, { merge:true });
+
+    window.location.href = "kimo2.html";
   })
-  .catch(()=>{
-    hideLoading();
+  .catch(err=>{
+    alert(err.message);
   });
+
 }
 
-/* ===== TOAST ===== */
-function showToast(msg){
-  const t=document.getElementById("toast");
-  t.innerText=msg;
-  t.style.display="block";
-  setTimeout(()=>t.style.display="none",2500);
-}
-
-/* ===== TABS ===== */
+/* tabs */
 function showLogin(){
   loginForm.classList.add("active");
   signupForm.classList.remove("active");
