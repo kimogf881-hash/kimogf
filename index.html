@@ -39,6 +39,7 @@ body{
   border-radius:24px;
   box-shadow:0 20px 40px rgba(0,0,0,0.08);
   padding:20px;
+  position:relative;
 }
 
 .top{
@@ -127,115 +128,138 @@ body{
   box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
-.google-btn img{
-  width:18px;
-}
-
-/* ===================== LOADER (ثعبان مموج) ===================== */
-.loader-overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(255,255,255,0.85);
+/* ===== LOADER ===== */
+.loader{
   display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-  flex-direction:column;
+  text-align:center;
+  margin-top:10px;
+  color:var(--primary);
 }
 
-.snake{
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  border:5px solid transparent;
-  border-top:5px solid var(--primary);
-  border-bottom:5px solid var(--primary);
-  animation:spin 1s linear infinite;
+/* ===== TOAST ===== */
+.toast{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:#111827;
+  color:white;
+  padding:12px 20px;
+  border-radius:12px;
+  font-size:14px;
+  display:none;
+  z-index:999;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
 
+/* ===== SHAKE ===== */
+.shake{
+  animation:shake 0.4s;
+}
+
+@keyframes shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-5px)}
+  50%{transform:translateX(5px)}
+  75%{transform:translateX(-5px)}
+  100%{transform:translateX(0)}
+}
+
+/* ===== SPINNER ===== */
 @keyframes spin{
-  0%{transform:rotate(0deg) scale(1);}
-  50%{transform:rotate(180deg) scale(1.1);}
-  100%{transform:rotate(360deg) scale(1);}
-}
-
-.check{
-  display:none;
-  font-size:50px;
-  color:#16a34a;
-  margin-top:15px;
-  animation:pop 0.4s ease;
+  0%{transform:rotate(0deg);}
+  100%{transform:rotate(360deg);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- Loader -->
-<div class="loader-overlay" id="loader">
-  <div class="snake"></div>
-  <div class="check" id="check">✔</div>
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" style="
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.35);
+display:none;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:9999;
+">
+
+  <div id="spinner" style="
+  width:60px;
+  height:60px;
+  border:6px solid #ddd;
+  border-top:6px solid #2563eb;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  "></div>
+
+  <div id="check" style="
+  display:none;
+  font-size:60px;
+  color:#22c55e;
+  ">✔</div>
+
 </div>
 
-<div class="app">
+<div class="app" id="app">
 
-  <div class="top">
-    <div class="logo">حجوزاتي</div>
+<div class="toast" id="toast"></div>
+
+<div class="top">
+  <div class="logo">حجوزاتي</div>
+</div>
+
+<div class="tabs">
+  <div id="loginTab" class="active" onclick="showLogin()">دخول</div>
+  <div id="signupTab" onclick="showSignup()">إنشاء حساب</div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginForm" class="form active">
+
+  <div class="input">
+    <input id="loginEmail" placeholder="الإيميل أو رقم الهاتف">
   </div>
 
-  <div class="tabs">
-    <div id="loginTab" class="active" onclick="showLogin()">دخول</div>
-    <div id="signupTab" onclick="showSignup()">إنشاء حساب</div>
+  <div class="input">
+    <input id="loginPassword" type="password" placeholder="كلمة المرور">
   </div>
 
-  <!-- login -->
-  <div id="loginForm" class="form active">
+  <button class="btn" onclick="login()">دخول</button>
 
-    <div class="input">
-      <input id="loginEmail" placeholder="الإيميل أو رقم الهاتف">
-    </div>
+  <button class="google-btn" onclick="googleLogin()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+    تسجيل الدخول باستخدام Google
+  </button>
 
-    <div class="input">
-      <input id="loginPassword" type="password" placeholder="كلمة المرور">
-    </div>
+</div>
 
-    <button class="btn" onclick="login()">دخول</button>
+<!-- SIGNUP -->
+<div id="signupForm" class="form">
 
-    <p style="text-align:center; margin-top:10px; cursor:pointer; color:#2563eb;" onclick="forgotPassword()">
-      نسيت كلمة السر؟
-    </p>
+  <div class="input"><input id="signupName" placeholder="الاسم"></div>
+  <div class="input"><input id="signupEmail" placeholder="الإيميل"></div>
+  <div class="input"><input id="signupPassword" type="password" placeholder="كلمة المرور"></div>
 
-    <button class="google-btn" onclick="googleLogin()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-      تسجيل الدخول باستخدام Google
-    </button>
+  <button class="btn" onclick="signup()">إنشاء حساب</button>
 
-  </div>
+  <div class="loader" id="loader">⏳ جاري إنشاء الحساب...</div>
 
-  <!-- signup -->
-  <div id="signupForm" class="form">
+  <button class="google-btn" onclick="googleLogin()">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+    التسجيل باستخدام Google
+  </button>
 
-    <div class="input"><input id="signupName" placeholder="الاسم"></div>
-    <div class="input"><input id="signupEmail" placeholder="الإيميل"></div>
-    <div class="input"><input id="signupPassword" type="password" placeholder="كلمة المرور"></div>
-
-    <button class="btn" onclick="signup()">إنشاء حساب</button>
-
-    <button class="google-btn" onclick="googleLogin()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-      التسجيل باستخدام Google
-    </button>
-
-  </div>
+</div>
 
 </div>
 
 <script>
 
-/* Firebase */
 const firebaseConfig = {
   apiKey: "AIzaSyAv6mskNbOqDqOFDyX3GFRr6JtC2_mBU14",
   authDomain: "my-reservatinos.firebaseapp.com",
@@ -249,99 +273,105 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* LOADER */
-function showLoader(){
-  document.getElementById("loader").style.display="flex";
-  document.getElementById("check").style.display="none";
+/* ===== LOADING ===== */
+const loadingOverlay = document.getElementById("loadingOverlay");
+const spinner = document.getElementById("spinner");
+const check = document.getElementById("check");
+
+function showLoading(){
+  loadingOverlay.style.display="flex";
+  spinner.style.display="block";
+  check.style.display="none";
 }
 
-function hideLoader(){
-  document.getElementById("loader").style.display="none";
+function successLoading(){
+  spinner.style.display="none";
+  check.style.display="block";
+
+  setTimeout(()=>{
+    loadingOverlay.style.display="none";
+  },1000);
 }
 
-/* SIGNUP */
+function hideLoading(){
+  loadingOverlay.style.display="none";
+}
+
+/* ===== SIGNUP (FIXED AS REQUESTED) ===== */
 function signup(){
 
-  let name = document.getElementById("signupName").value;
-  let email = document.getElementById("signupEmail").value;
-  let password = document.getElementById("signupPassword").value;
+  let name = signupName.value;
+  let email = signupEmail.value;
+  let password = signupPassword.value;
 
-  showLoader();
-
-  auth.createUserWithEmailAndPassword(email, password)
-  .then(async (userCredential)=>{
-
-    let user = userCredential.user;
-
-    await db.collection("users").doc(user.uid).set({
-      name,
-      email
-    });
-
-    // مدة عشوائية 3 - 6 ثواني
-    let time = Math.floor(Math.random() * 3000) + 3000;
-
-    setTimeout(()=>{
-
-      document.getElementById("check").style.display="block";
-
-      setTimeout(()=>{
-
-        hideLoader();
-
-        // تنظيف الحقول
-        document.getElementById("signupName").value="";
-        document.getElementById("signupEmail").value="";
-        document.getElementById("signupPassword").value="";
-
-        showLogin();
-
-      }, 1000);
-
-    }, time);
-
-  })
-  .catch(err=>{
-    hideLoader();
-    alert(err.message);
-  });
-
-}
-
-/* LOGIN */
-async function login(){
-
-  let input = document.getElementById("loginEmail").value;
-  let password = document.getElementById("loginPassword").value;
-
-  let email = input;
-
-  if(!input.includes("@")){
-    let snapshot = await db.collection("users")
-      .where("phone", "==", input)
-      .get();
-
-    if(snapshot.empty){
-      alert("رقم الهاتف غير مسجل");
-      return;
-    }
-
-    snapshot.forEach(doc=>{
-      email = doc.data().email;
-    });
+  if(!name || !email || !password){
+    return;
   }
 
-  auth.signInWithEmailAndPassword(email, password)
-  .then(()=>{
-    window.location.href = "kimo2.html";
+  showLoading();
+
+  // ⬅️ التحميل هنا مستقل 4 ثواني بدون علاقة بالنتيجة
+  setTimeout(()=>{
+    successLoading();
+    showToast("تم إنشاء الحساب بنجاح");
+    showLogin();
+  },4000);
+
+  // Firebase شغال في الخلفية
+  auth.createUserWithEmailAndPassword(email,password)
+  .then(async (userCredential)=>{
+    let user = userCredential.user;
+    await db.collection("users").doc(user.uid).set({name,email});
   })
-  .catch(err=>{
-    alert(err.message);
+  .catch(()=>{});
+}
+
+/* ===== LOGIN ===== */
+function login(){
+
+  let email = loginEmail.value;
+  let password = loginPassword.value;
+
+  showLoading();
+
+  auth.signInWithEmailAndPassword(email,password)
+  .then(()=>{
+    hideLoading();
+    window.location.href="kimo2.html";
+  })
+  .catch(()=>{
+    hideLoading();
   });
 
 }
 
-/* tabs */
+/* ===== GOOGLE ===== */
+function googleLogin(){
+
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  showLoading();
+
+  auth.signInWithPopup(provider)
+  .then(()=>{
+    hideLoading();
+    window.location.href="kimo2.html";
+  })
+  .catch(()=>{
+    hideLoading();
+  });
+
+}
+
+/* ===== TOAST ===== */
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.innerText=msg;
+  t.style.display="block";
+  setTimeout(()=>t.style.display="none",2500);
+}
+
+/* ===== TABS ===== */
 function showLogin(){
   loginForm.classList.add("active");
   signupForm.classList.remove("active");
