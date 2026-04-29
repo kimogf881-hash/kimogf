@@ -7,8 +7,13 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
 <style>
 
+/* ====== نفس تصميمك تماماً بدون تغيير ====== */
 body{
   font-family:Arial;
   margin:0;
@@ -280,6 +285,31 @@ body{
 
 <script>
 
+/* ===== Firebase ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyAv6mskNbOqDqOFDyX3GFRr6JtC2_mBU14",
+  authDomain: "my-reservatinos.firebaseapp.com",
+  projectId: "my-reservatinos",
+  storageBucket: "my-reservatinos.firebasestorage.app",
+  messagingSenderId: "20072193337",
+  appId: "1:20072193337:web:57a427559ff7b6dea05ce8",
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+let userEmail = "";
+
+/* جلب المستخدم */
+firebase.auth().onAuthStateChanged((user)=>{
+  if(user){
+    userEmail = user.email;
+  }else{
+    window.location.href = "index.html";
+  }
+});
+
+/* ===== Language ===== */
 const T={
 ar:{
 title:"حجوزاتي",
@@ -324,7 +354,7 @@ if(currentPage==="support") openSupport();
 if(currentPage==="profile") openProfile();
 }
 
-/* PROFILE */
+/* ===== PROFILE (التعديل الوحيد هنا) ===== */
 function openProfile(){
 content.innerHTML=`
 <div class="profile">
@@ -336,8 +366,8 @@ content.innerHTML=`
 </div>
 
 <div class="user-info">
-<h3>اسم المستخدم</h3>
-<p>user@email.com</p>
+<h3>${userEmail || "..."}</h3>
+<p>${userEmail || ""}</p>
 </div>
 
 <div style="padding:15px">
@@ -401,7 +431,7 @@ document.body.classList.toggle("dark");
 btn.classList.toggle("active");
 }
 
-/* 🔥 TOGGLE LANGUAGE */
+/* LANGUAGE */
 function toggleLang(){
 lang = (lang === "ar") ? "en" : "ar";
 localStorage.setItem("lang", lang);
