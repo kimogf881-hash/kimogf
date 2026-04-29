@@ -44,7 +44,7 @@ body{
 /* top */
 .top{
   display:flex;
-  justify-content:center;
+  justify-content:space-between;
   align-items:center;
   margin-bottom:10px;
 }
@@ -109,7 +109,7 @@ body{
   cursor:pointer;
 }
 
-/* Google Button */
+/* 🔥 Google Button */
 .google-btn{
   width:100%;
   padding:12px;
@@ -142,12 +142,10 @@ body{
 
 <div class="app">
 
-  <!-- top -->
   <div class="top">
     <div class="logo">حجوزاتي</div>
   </div>
 
-  <!-- tabs -->
   <div class="tabs">
     <div id="loginTab" class="active" onclick="showLogin()">دخول</div>
     <div id="signupTab" onclick="showSignup()">إنشاء حساب</div>
@@ -156,10 +154,15 @@ body{
   <!-- login -->
   <div id="loginForm" class="form active">
 
-    <div class="input"><input placeholder="الإيميل"></div>
-    <div class="input"><input type="password" placeholder="كلمة المرور"></div>
+    <div class="input">
+      <input id="loginEmail" placeholder="الإيميل">
+    </div>
 
-    <button class="btn">دخول</button>
+    <div class="input">
+      <input id="loginPassword" type="password" placeholder="كلمة المرور">
+    </div>
+
+    <button class="btn" onclick="login()">دخول</button>
 
     <button class="google-btn" onclick="googleLogin()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
@@ -168,7 +171,7 @@ body{
 
   </div>
 
-  <!-- signup -->
+  <!-- signup (ما غيرنا التصميم) -->
   <div id="signupForm" class="form">
 
     <div class="input"><input placeholder="الاسم"></div>
@@ -188,45 +191,46 @@ body{
 
 <script>
 
-/* Firebase Config */
+/* Firebase */
 const firebaseConfig = {
   apiKey: "AIzaSyAv6mskNbOqDqOFDyX3GFRr6JtC2_mBU14",
   authDomain: "my-reservatinos.firebaseapp.com",
   projectId: "my-reservatinos",
   storageBucket: "my-reservatinos.firebasestorage.app",
   messagingSenderId: "20072193337",
-  appId: "1:20072193337:web:57a427559ff7b6dea05ce8"
+  appId: "1:20072193337:web:57a427559ff7b6dea05ce8",
 };
 
 firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+/* 🔥 LOGIN EMAIL/PASSWORD */
+function login(){
+
+  let email = document.getElementById("loginEmail").value;
+  let password = document.getElementById("loginPassword").value;
+
+  auth.signInWithEmailAndPassword(email, password)
+  .then(()=>{
+    window.location.href = "kimo2.html";
+  })
+  .catch(err=>{
+    alert(err.message);
+  });
+
+}
 
 /* GOOGLE LOGIN */
 function googleLogin(){
 
   const provider = new firebase.auth.GoogleAuthProvider();
 
-  firebase.auth()
-  .signInWithPopup(provider)
-  .then((result)=>{
-
-    let user = result.user;
-
-    // 🔥 نجيب الاسم أو الإيميل
-    let username = user.displayName || user.email;
-
-    // 🔥 نحفظو عشان الصفحة التانية
-    let profile = {
-      name: username,
-      bio: "مرحبا 👋"
-    };
-
-    localStorage.setItem("profile", JSON.stringify(profile));
-
+  auth.signInWithPopup(provider)
+  .then(()=>{
     window.location.href = "kimo2.html";
-
   })
-  .catch((error)=>{
-    alert(error.message);
+  .catch(err=>{
+    alert(err.message);
   });
 
 }
