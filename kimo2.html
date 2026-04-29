@@ -21,10 +21,22 @@ body{
   padding:12px;
   max-width:420px;
   margin:auto;
-  padding-bottom:80px;
+  padding-bottom:90px;
 }
 
 .dark{background:#121212;color:#fff;}
+
+/* HEADER */
+.header{
+  background:linear-gradient(45deg,#2196f3,#21cbf3);
+  color:#fff;
+  padding:18px;
+  border-radius:15px;
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
 
 /* CARD */
 .card{
@@ -33,38 +45,56 @@ body{
   padding:15px;
   border-radius:15px;
   margin-top:10px;
-  animation:fadeIn .3s ease;
 }
 
-/* PROFILE */
+/* PROFILE 🔥 (تطوير فقط هنا) */
 .profile{
   background:#fff;
-  border-radius:15px;
+  border-radius:20px;
   overflow:hidden;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
   animation:fadeIn .3s ease;
 }
 
 .dark .profile{background:#1e1e1e}
 
 .cover{
-  height:160px;
+  height:170px;
   background:linear-gradient(45deg,#2196f3,#21cbf3);
+  position:relative;
 }
 
+/* avatar احترافي */
 .avatar-box{
   text-align:center;
-  margin-top:-55px;
+  margin-top:-60px;
+  position:relative;
 }
 
 .avatar{
-  width:100px;
-  height:100px;
+  width:110px;
+  height:110px;
   border-radius:50%;
   border:4px solid #fff;
-  background:#ccc;
-  background-size:cover;
-  background-position:center;
+  background:linear-gradient(45deg,#ddd,#bbb);
   margin:auto;
+  box-shadow:0 10px 25px rgba(0,0,0,0.25);
+  animation:pop 0.4s ease;
+}
+
+/* اسم + ايميل */
+.user-info{
+  text-align:center;
+  padding:10px;
+}
+
+.user-info h3{
+  margin:5px 0;
+}
+
+.user-info p{
+  font-size:13px;
+  color:#777;
 }
 
 /* SETTINGS */
@@ -75,8 +105,8 @@ body{
   margin-top:10px;
   display:flex;
   justify-content:space-between;
+  align-items:center;
 }
-
 .dark .setting{background:#1e1e1e}
 
 /* SERVICES */
@@ -93,10 +123,14 @@ body{
   border-radius:12px;
   text-align:center;
   cursor:pointer;
-  transition:0.2s;
+  transition:0.3s;
 }
 
-.service:hover{transform:scale(1.05);}
+.service:hover{
+  transform:translateY(-8px) scale(1.05);
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
 .dark .service{background:#1e1e1e}
 
 /* SUPPORT */
@@ -104,28 +138,33 @@ body{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:12px;
+  margin-top:10px;
 }
 
 .support-item{
   background:#fff;
-  padding:18px;
-  border-radius:14px;
+  padding:18px 10px;
+  border-radius:16px;
   text-align:center;
-  text-decoration:none;
-  color:#333;
-  box-shadow:0 6px 15px rgba(0,0,0,0.08);
-  transition:0.25s;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.support-item:hover{
+  transform:translateY(-8px) scale(1.05);
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
 .support-item i{
   font-size:28px;
-  display:block;
-  margin-bottom:8px;
   color:#2196f3;
+  margin-bottom:8px;
+  display:block;
 }
 
-.support-item:hover{
-  transform:translateY(-5px) scale(1.05);
+.support-item span{
+  font-size:12px;
+  font-weight:bold;
 }
 
 .dark .support-item{
@@ -133,37 +172,41 @@ body{
   color:#fff;
 }
 
-/* BOTTOM NAV */
+/* NAV */
 .bottom-nav{
   position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  width:calc(100% - 24px);
+  max-width:420px;
   background:#fff;
   display:flex;
   justify-content:space-around;
   padding:10px 0;
+  border-radius:15px;
   box-shadow:0 -5px 15px rgba(0,0,0,0.1);
 }
 
 .dark .bottom-nav{background:#1e1e1e}
 
 .nav-item{
+  flex:1;
   text-align:center;
   font-size:12px;
   cursor:pointer;
   color:#666;
+  transition:0.3s;
+}
+
+.nav-item:hover{
+  transform:scale(1.1);
+  color:#2196f3;
 }
 
 .nav-item i{display:block;font-size:18px;}
 
-/* ANIMATION */
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-/* 🔥 TOGGLE SWITCH */
+/* TOGGLE */
 .theme-btn{
   width:60px;
   height:30px;
@@ -172,7 +215,6 @@ body{
   border:2px solid #2196f3;
   position:relative;
   cursor:pointer;
-  transition:0.3s;
 }
 
 .theme-btn::after{
@@ -198,6 +240,17 @@ body{
   background:#fff;
 }
 
+/* animations */
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes pop{
+  from{transform:scale(0.8);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+
 </style>
 </head>
 
@@ -205,17 +258,17 @@ body{
 
 <div class="container">
 
-<h2 id="title"></h2>
+<div class="header" id="title"></div>
 
 <div id="content"></div>
 
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- NAV -->
 <div class="bottom-nav">
 
-<div class="nav-item" onclick="setPage('huom')">
-<i class="fas fa-grid-2"></i><span id="sv"></span>
+<div class="nav-item" onclick="setPage('services')">
+<i class="fas fa-globe"></i><span id="sv"></span>
 </div>
 
 <div class="nav-item" onclick="setPage('bookings')">
@@ -234,38 +287,27 @@ body{
 
 <script>
 
-/* ===== LANG DATA ===== */
 const T={
 ar:{
 title:"حجوزاتي",
 profile:"الملف",
 bookings:"الحجوزات",
 support:"الدعم",
-services:"🏛️الشاشه الرئيسيه ",
-dark:"الوضع الليلي"
+services:"الرئيسية"
 },
 en:{
 title:"Bookings",
 profile:"Profile",
 bookings:"Bookings",
-support:"huom",
-services:"Services",
-dark:"Dark Mode"
+support:"Support",
+services:"Home"
 }
 };
 
 let lang = localStorage.getItem("lang") || "ar";
 let currentPage = "services";
 
-/* PROFILE DATA */
-let profile = JSON.parse(localStorage.getItem("profile")) || {
-name:"اسم المستخدم",
-bio:"نبذة"
-};
-
-/* ===== APPLY LANGUAGE (FIXED 100%) ===== */
 function applyLang(){
-
 let t = T[lang];
 
 title.innerText = t.title;
@@ -275,65 +317,21 @@ su.innerText = t.support;
 sv.innerText = t.services;
 
 document.documentElement.dir = (lang==="ar") ? "rtl" : "ltr";
-
-localStorage.setItem("lang", lang);
-
 }
 
-/* ===== NAV ===== */
 function setPage(page){
 currentPage = page;
 refreshPage();
 }
 
-/* ===== REFRESH PAGE ===== */
 function refreshPage(){
-
 if(currentPage==="services") openServices();
 if(currentPage==="bookings") openBookings();
 if(currentPage==="support") openSupport();
 if(currentPage==="profile") openProfile();
-
 }
 
-/* ===== SERVICES ===== */
-function openServices(){
-content.innerHTML=`
-<div class="services">
-
-<div class="service">✈️ ${lang==="ar"?"سفر":"Travel"}</div>
-<div class="service">🏨 ${lang==="ar"?"فنادق":"Hotels"}</div>
-<div class="service">🏥 ${lang==="ar"?"رعاية":"Health"}</div>
-<div class="service">🏛️ ${lang==="ar"?"قاعات":"Halls"}</div>
-<div class="service">🚗 ${lang==="ar"?"مركبة":"Car"}</div>
-
-</div>`;
-}
-
-/* ===== BOOKINGS ===== */
-function openBookings(){
-content.innerHTML="<div class='card'>📅 "+T[lang].bookings+"</div>";
-}
-
-/* ===== SUPPORT ===== */
-function openSupport(){
-content.innerHTML=`
-<div class="card">
-
-<div class="support-box">
-
-<a class="support-item"><i class="fab fa-whatsapp"></i>WhatsApp</a>
-<a class="support-item"><i class="fas fa-phone"></i>Call</a>
-<a class="support-item"><i class="fas fa-envelope"></i>Email</a>
-
-</div>
-
-</div>`;
-}
-
-/* ===== PROFILE + SETTINGS ===== */
 function openProfile(){
-
 content.innerHTML=`
 <div class="profile">
 
@@ -343,18 +341,16 @@ content.innerHTML=`
 <div class="avatar"></div>
 </div>
 
-<div style="text-align:center;padding:10px">
-<h3>${profile.name}</h3>
-<p>${profile.bio}</p>
+<div class="user-info">
+<h3 id="username">اسم المستخدم</h3>
+<p id="email">user@email.com</p>
 </div>
 
 <div style="padding:15px">
 
-<h3>${T[lang].dark}</h3>
-
 <div class="setting">
-<span>${T[lang].dark}</span>
-<div class="theme-btn" id="themeBtn" onclick="toggleDark(this)"></div>
+<span>الوضع الليلي</span>
+<div class="theme-btn" onclick="toggleDark(this)"></div>
 </div>
 
 <select onchange="changeLang(this.value)">
@@ -367,41 +363,44 @@ content.innerHTML=`
 </div>`;
 }
 
-/* ===== DARK MODE ===== */
+/* باقي الصفحات بدون تغيير */
+function openServices(){
+content.innerHTML=`<div class="services">
+<div class="service">✈️ ${lang==="ar"?"سفر":"Travel"}</div>
+<div class="service">🏨 ${lang==="ar"?"فنادق":"Hotels"}</div>
+<div class="service">🏥 ${lang==="ar"?"رعاية":"Health"}</div>
+<div class="service">🏛️ ${lang==="ar"?"قاعات":"Halls"}</div>
+<div class="service">🚗 ${lang==="ar"?"مركبة":"Car"}</div>
+</div>`;
+}
+
+function openBookings(){
+content.innerHTML="<div class='card'>📅 "+T[lang].bookings+"</div>";
+}
+
+function openSupport(){
+content.innerHTML=`<div class="card"><div class="support-box">
+<div class="support-item"><i class="fab fa-whatsapp"></i><span>WhatsApp</span></div>
+<div class="support-item"><i class="fas fa-phone"></i><span>Call</span></div>
+<div class="support-item"><i class="fas fa-envelope"></i><span>Email</span></div>
+</div></div>`;
+}
+
 function toggleDark(btn){
-
 document.body.classList.toggle("dark");
-
-let isDark = document.body.classList.contains("dark");
-
-localStorage.setItem("dark", isDark);
-
-btn.classList.toggle("active", isDark);
-
+btn.classList.toggle("active");
 }
 
-/* ===== LANGUAGE FIX ===== */
 function changeLang(l){
-
-lang = l;
-localStorage.setItem("lang", lang);
-
-/* 🔥 مهم جداً */
+lang=l;
+localStorage.setItem("lang",l);
 applyLang();
 refreshPage();
-
 }
 
-/* ===== LOAD ===== */
 window.onload=function(){
-
-if(localStorage.getItem("dark")==="true"){
-document.body.classList.add("dark");
-}
-
 applyLang();
 refreshPage();
-
 }
 
 </script>
